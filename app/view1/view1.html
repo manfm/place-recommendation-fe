@@ -1,1 +1,17 @@
 <p>This is the partial for view 1.</p>
+<ui-gmap-google-map center='map.center' zoom='map.zoom'>
+  <ui-gmap-markers
+                doCluster="map.doCluster"
+                models="map.markers"
+                coords="'coords'"
+                idkey="'key'"
+                chunk="200"
+                ></ui-gmap-markers>
+</ui-gmap-google-map>
+<pre>{{map.markers | json}}</pre>
+
+<style>
+  .angular-google-map-container {
+    height: 400px;
+  }
+</style>
