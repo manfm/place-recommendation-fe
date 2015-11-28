@@ -26,6 +26,6 @@ ln -s /home/vagrant/npm-local-node_modules node_modules
 npm install -g bower
 npm install -g karma-cli
 
-# wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 
 echo "cd /vagrant" >> /home/vagrant/.bashrc
