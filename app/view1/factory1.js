@@ -20,7 +20,7 @@ factory('MarkerCreatorService', function() {
   };
 }).
 factory('GeoService', function() {
-  function getPlaces() {
+  function getPlacesAroundPosition(position) {
     var places = [];
     var count = 20;
 
@@ -32,8 +32,8 @@ factory('GeoService', function() {
 
     for (var i = 0; i < count; i++) {
       places.push({
-        lat: randomizePoint(35.68),
-        lng: randomizePoint(139.75),
+        latitude: randomizePoint(position.latitude),
+        longitude: randomizePoint(position.longitude),
         rating: Math.floor(((Math.random() * 10) % 5) + 1) //raing 1*-5*
       });
     }
@@ -41,7 +41,7 @@ factory('GeoService', function() {
     return places;
   }
 
-  function filterPlaces(places, returnCount) {
+  function filterPlaces(keyPosition, places, returnCount) {
     //sort from 5* rating to 1*
     places.sort(function(a, b) {
       return b.rating - a.rating;
@@ -51,12 +51,24 @@ factory('GeoService', function() {
     return places.slice(0, returnCount);
   }
 
-  function getFilteredPlaces(returnCount = 10) {
-    return filterPlaces(getPlaces(), returnCount);
+  function getFilteredPlaces(keyPosition, returnCount = 10) {
+    return filterPlaces(keyPosition, getPlacesAroundPosition(keyPosition), returnCount);
+  }
+
+  function getCurrentPosition(successCallback) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        if (typeof successCallback === 'function') {
+          return successCallback(position.coords.latitude, position.coords.longitude);
+        }
+      });
+    } else {
+      console.log('Unable to locate current position');
+    }
   }
 
   return {
-    getPlaces: getPlaces,
+    getCurrentPosition: getCurrentPosition,
     getFilteredPlaces: getFilteredPlaces
   };
 });
