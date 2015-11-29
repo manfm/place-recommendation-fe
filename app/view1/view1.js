@@ -17,11 +17,14 @@ config(function(uiGmapGoogleMapApiProvider) {
 }).
 controller('View1Ctrl', ['$scope', 'uiGmapGoogleMapApi', "uiGmapObjectIterators", 'MarkerCreatorService', 'GeoService',
   function($scope, uiGmapGoogleMapApi, uiGmapObjectIterators, MarkerCreatorService, GeoService) {
+
+    //default position. Will be changed after getting position from browser
     $scope.currentPotision = {
       latitude: 34.68,
       longitude: 135.50
     };
 
+    //map init
     $scope.map = {
       center: $scope.currentPotision,
       zoom: 12,
@@ -32,28 +35,38 @@ controller('View1Ctrl', ['$scope', 'uiGmapGoogleMapApi', "uiGmapObjectIterators"
       }
     };
 
+    //callback when map is ready
     uiGmapGoogleMapApi.then(function(map) {
-      //map is ready
-      GeoService.getCurrentPosition(recommend);
+      //get position from web browser
+      GeoService.getCurrentPosition(function(position) {
+        moveMapCenterToPosition(position);
+        loadPlaces(position);
+      });
     });
 
-    function recommend(lat, lng) {
-      $scope.currentPotision = {
-        latitude: lat,
-        longitude: lng
-      };
+    function moveMapCenterToPosition(position) {
+      $scope.currentPotision = position;
+      refreshMap();
+    }
 
-      var places = GeoService.getFilteredPlaces($scope.currentPotision, 3);
+    function loadPlaces(position) {
+      //get places from web rest api
+      GeoService.getFilteredPlaces(position, 3, function(places) {
+        // put places to map as markers
+        var markers = [];
+        for (var id = 0; id < places.length; id++) {
+          markers.push(
+            MarkerCreatorService.createByCoords(places[id].latitude, places[id].longitude)
+          );
+        }
 
-      var markers = [];
-      for (var id = 0; id < places.length; id++) {
-        markers.push(
-          MarkerCreatorService.createByCoords(places[id].latitude, places[id].longitude)
-        );
-      }
+        $scope.map.markers = uiGmapObjectIterators.slapAll(markers);
 
-      $scope.map.markers = uiGmapObjectIterators.slapAll(markers);
+        refreshMap();
+      });
+    }
 
+    function refreshMap() {
       $scope.map.control.refresh($scope.currentPotision);
     }
   }

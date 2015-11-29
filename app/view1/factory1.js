@@ -19,47 +19,43 @@ factory('MarkerCreatorService', function() {
     createByCoords: createByCoords
   };
 }).
-factory('GeoService', function() {
-  function getPlacesAroundPosition(position) {
-    var places = [];
-    var count = 20;
+factory('GeoService', function($http) {
+  function getFilteredPlaces(keyPosition, returnCount = 10, successCallback, errorCallback) {
+    var server = 'http://localhost:3000';
+    $http.get(server, {
+      params: keyPosition
+    }).then(
+      // Success
+      function(response) {
+        // change datat format to required
+        var places = [];
+        for (var i = 0; i < response.data.length; i++) {
+          var place = response.data[i]['_source'];
+          places.push({
+            name: place.name,
+            latitude: place.location.split(',')[0],
+            longitude: place.location.split(',')[1],
+            rating: place.rating
+          });
+        }
 
-    function randomizePoint(point) {
-      var negativeOrPositive = (Math.random() > 0.5) ? -1 : 1;
-      var randomNumber = 3 * (Math.random() / 100); // 3 * 0.00xxxx
-      return point + (randomNumber * negativeOrPositive);
-    }
-
-    for (var i = 0; i < count; i++) {
-      places.push({
-        latitude: randomizePoint(position.latitude),
-        longitude: randomizePoint(position.longitude),
-        rating: Math.floor(((Math.random() * 10) % 5) + 1) //raing 1*-5*
-      });
-    }
-
-    return places;
-  }
-
-  function filterPlaces(keyPosition, places, returnCount) {
-    //sort from 5* rating to 1*
-    places.sort(function(a, b) {
-      return b.rating - a.rating;
-    });
-
-    //return x items with best rating
-    return places.slice(0, returnCount);
-  }
-
-  function getFilteredPlaces(keyPosition, returnCount = 10) {
-    return filterPlaces(keyPosition, getPlacesAroundPosition(keyPosition), returnCount);
+        //pass places back
+        if (typeof successCallback === 'function') {
+          return successCallback(places);
+        }
+      },
+      errorCallback
+    );
   }
 
   function getCurrentPosition(successCallback) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         if (typeof successCallback === 'function') {
-          return successCallback(position.coords.latitude, position.coords.longitude);
+          return successCallback({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
         }
       });
     } else {
