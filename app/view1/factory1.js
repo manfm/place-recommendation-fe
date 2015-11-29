@@ -21,7 +21,8 @@ factory('MarkerCreatorService', function() {
 }).
 factory('GeoService', function($http) {
   function getFilteredPlaces(keyPosition, returnCount = 10, successCallback, errorCallback) {
-    var server = 'http://localhost:3000';
+    // REST_API_URL is global variable from server.js /getenv.js
+    var server = (typeof REST_API_URL !== 'undefined') ? REST_API_URL : 'http://localhost:3000';
     $http.get(server, {
       params: keyPosition
     }).then(
