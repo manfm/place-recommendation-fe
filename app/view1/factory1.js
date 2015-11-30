@@ -5,7 +5,7 @@ angular.module('myApp.view1')
     var markerId = 0;
 
     // iconType = 'red','blue-dot','green', ...
-    function createByPlace(place, iconType = 'red') {
+    function createByPlace(place, iconType) {
       place['coords'] = {
         'latitude': place.latitude,
         'longitude': place.longitude
