@@ -1,17 +1,24 @@
 <p>This is the partial for view 1.</p>
 <ui-gmap-google-map center='map.center' zoom='map.zoom' control="map.control">
-  <ui-gmap-markers
-                doCluster="map.doCluster"
-                models="map.markers"
-                coords="'coords'"
-                idkey="'key'"
-                chunk="200"
-                ></ui-gmap-markers>
+  <ui-gmap-marker ng-repeat="m in map.markers" doCluster="true" chunk="5" models="map.markers" coords="m.coords" idkey="m.key" icon="m.icon">
+
+    <ui-gmap-window show="m.show" ng-cloak>
+      <div>
+        <p>
+          {{m.name}}: {{m.rating}} ({{ m.coords.latitude | number:2 }}, {{ m.coords.longitude | number:2 }}) {{m.score}}
+        </p>
+      </div>
+      </ui-gmap-windows>
+
+      </ui-gmap-markers>
 </ui-gmap-google-map>
-<pre>{{map.markers | json}}</pre>
+<span>name: rating (latitude,longitude) score</span>
+<div ng-repeat="m in map.markers">
+  <span>{{m.name}}:{{m.rating}} ({{ m.coords.latitude | number:2 }}, {{ m.coords.longitude | number:2 }}) {{m.score}}</span>
+</div>
 
 <style>
   .angular-google-map-container {
-    height: 400px;
+    height: 600px;
   }
 </style>
