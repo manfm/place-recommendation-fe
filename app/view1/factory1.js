@@ -27,9 +27,11 @@ angular.module('myApp.view1')
   .factory('GeoService', function($http) {
     function getFilteredPlaces(keyPosition, successCallback, errorCallback) {
       // REST_API_URL is global variable from file server.js path '/getenv.js'
+      var data = keyPosition;
+      data.size = 10;
       var server = (typeof REST_API_URL !== 'undefined') ? REST_API_URL : 'http://localhost:3000';
       $http.get(server, {
-        params: keyPosition
+        params: data
       }).then(
         // Success
         function(response) {
@@ -45,11 +47,6 @@ angular.module('myApp.view1')
               score: Math.round(parseFloat(response.data[i]['_score']) * 100000) //make score int to easilly read by user
             });
           }
-
-          // order by score: descendent
-          places.sort(function(a, b) {
-            return b.score - a.score
-          });
 
           //pass places back
           if (typeof successCallback === 'function') {
