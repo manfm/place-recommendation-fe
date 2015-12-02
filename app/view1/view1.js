@@ -31,7 +31,7 @@ angular.module('myApp.view1', ['ngRoute', 'uiGmapgoogle-maps'])
       //map init
       $scope.map = {
         center: $scope.currentPotision,
-        zoom: 12,
+        zoom: 6,
         markers: [],
         control: {},
         options: {
@@ -90,6 +90,7 @@ angular.module('myApp.view1', ['ngRoute', 'uiGmapgoogle-maps'])
 
       function refreshMap() {
         $scope.map.control.refresh($scope.currentPotision);
+        $scope.map.zoom = 12;
       }
 
       // popup windows for marker
