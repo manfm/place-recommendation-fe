@@ -3,17 +3,21 @@
     <table class="table">
       <tr>
         <th>name</th>
-        <th>::</th>
+        <th>R</th>
         <th>rating</th>
-        <th>;</th>
+        <th>D</th>
+        <th>distance</th>
+        <th>S</th>
         <th>score</th>
       </tr>
       <tr ng-repeat="m in map.markers">
         <td>{{m.name}}</td>
-        <td>::</td>
+        <td>R</td>
         <td>{{m.rating}}</td>
-        <td>;</td>
-        <td>{{m.score}}</td>
+        <td>D</td>
+        <td>{{m.distance | roundFloat}}</td>
+        <td>S</td>
+        <td>{{m.score | roundFloat}}</td>
       </tr>
     </table>
   </div>
@@ -24,7 +28,7 @@
         <ui-gmap-window show="m.show" ng-cloak>
           <div>
             <p>
-              {{m.name}} :: {{m.rating}} ; {{m.score}}
+              <b>{{m.name}}</b> R{{m.rating}} D{{m.distance | roundFloat}} S{{m.score | roundFloat}}
             </p>
           </div>
           </ui-gmap-windows>
@@ -34,10 +38,3 @@
   </div>
 </div>
 </div>
-
-
-<style>
-  .angular-google-map-container {
-    height: 600px;
-  }
-</style>

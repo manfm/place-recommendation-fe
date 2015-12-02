@@ -30,27 +30,15 @@ angular.module('myApp.view1')
       var data = keyPosition;
       data.size = 10;
       var server = (typeof REST_API_URL !== 'undefined') ? REST_API_URL : 'http://localhost:3000';
+
       $http.get(server, {
         params: data
       }).then(
         // Success
         function(response) {
-          // change data format to required
-          var places = [];
-          for (var i = 0; i < response.data.length; i++) {
-            var place = response.data[i]['_source'];
-            places.push({
-              name: place.name,
-              latitude: place.location.split(',')[0],
-              longitude: place.location.split(',')[1],
-              rating: place.rating,
-              score: Math.round(parseFloat(response.data[i]['_score']) * 100000) //make score int to easilly read by user
-            });
-          }
-
           //pass places back
           if (typeof successCallback === 'function') {
-            return successCallback(places);
+            return successCallback(response.data);
           }
         },
         errorCallback

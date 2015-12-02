@@ -14,6 +14,11 @@ angular.module('myApp.view1', ['ngRoute', 'uiGmapgoogle-maps'])
       libraries: 'weather,geometry,visualization'
     });
   })
+  .filter("roundFloat", function() {
+    return function(float) {
+      return parseFloat(float) ? (Math.round(parseFloat(float) * 100) / 100) : '';
+    }
+  })
   .controller('View1Ctrl', ['$scope', 'uiGmapGoogleMapApi', "uiGmapObjectIterators", 'MarkerCreatorService', 'GeoService',
     function($scope, uiGmapGoogleMapApi, uiGmapObjectIterators, MarkerCreatorService, GeoService) {
 
